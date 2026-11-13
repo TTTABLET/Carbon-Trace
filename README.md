@@ -1,2 +1,117 @@
 # Carbon-Trace
 记录每一天的碳足迹，让改变看得见。  一款纯前端的个人碳足迹记录与减排建议工具，支持中英文一键切换、明暗主题、数据本地存储。/Record your carbon footprint every day, and let the change be seen.  A purely front-end personal carbon footprint tracking and reduction-suggestion tool, featuring one-click Chinese/English switching, light and dark themes, and local data storage.
+# 碳迹 Carbon Trace
+
+记录每一天的碳足迹，让改变看得见。
+
+一款纯前端的个人碳足迹记录与减排建议工具，支持中英文一键切换、明暗主题、数据本地存储。
+
+## 快速开始
+
+项目内置了免安装版 Node.js（`node/` 目录），无需额外配置环境。
+
+```powershell
+# 进入项目目录
+cd C:\Users\23518\Desktop\Carbon-Diary\app
+
+# 启动开发服务器（使用内置 Node）
+..\node\npm.cmd run dev
+```
+
+浏览器打开 http://localhost:5173
+
+## 构建生产版本
+
+```powershell
+..\node\npm.cmd run build
+```
+
+产物在 `app/dist/`，是一堆静态文件，可直接部署到任意静态托管平台。
+
+## 功能
+
+| 模块 | 说明 |
+|---|---|
+| 看板 | 今日/本周/本月/累计排放、环保评级、连续打卡、趋势图、构成饼图、基准对比、等效换算 |
+| 记录 | 四大类（交通/能源/饮食/消费）共 33 种活动，实时预览排放量 |
+| 建议 | 18 条减排建议，按「类别占比 × 减排量 ÷ 难度」智能排序 |
+| 生态 | 8 个城市的空气质量指数（AQI）、6 项污染物浓度、9 项气象数据、24 小时与 7 天 AQI 趋势 |
+| 排行 | 6 个典型生活状态画像 + 你，按日均排放升序排名，可自定义昵称与头像 |
+| 海报 | Canvas 生成 750×1200 竖版分享海报，含评级徽章、等效换算与环保标语，可下载 PNG |
+| 关于 | 计算原理、数据来源、隐私说明、数据导入导出 |
+
+## 示例用户画像
+
+首次打开应用时，排行榜会展示 6 个典型生活状态画像，用于对比不同生活方式下的碳足迹差异：
+
+| 画像 | 生活状态 | 日均排放 |
+|---|---|---|
+| 🌿 林小绿 | 骑车通勤、素食为主、几乎不点外卖 | 约 5.0 kgCO₂e |
+| 💼 陈通勤 | 每天地铁上下班，饮食均衡，偶尔打车 | 约 10.3 kgCO₂e |
+| 🌱 孙新手 | 刚开始关注环保，尝试减少一次性塑料 | 约 17.6 kgCO₂e |
+| 🚗 赵有车 | 单程 25 公里自驾，周末常出游 | 约 21.7 kgCO₂e |
+| 🍱 李外卖 | 一日三餐全靠外卖，快递包裹堆成山 | 约 23.0 kgCO₂e |
+| 🥩 王大肉 | 每餐必有红肉，开车出行，空调常开 | 约 55.3 kgCO₂e |
+
+画像数据由确定性伪随机算法按需生成（种子为 `画像ID + 日期`），不写入你的记录表，因此不会干扰你自己的数据统计。
+
+## 离线说明
+
+本应用完全离线运行，无需任何网络服务：
+
+- 生态状况模块的数据为**离线模拟生成**，用于演示界面效果，不代表真实环境监测结果
+- 排行榜中的画像数据为**模拟数据**，用于倡导绿色生活方式
+- 所有数据仅保存在浏览器本地 IndexedDB
+
+## 计算原理
+
+$$E = \sum_{i} A_i \times F_i$$
+
+- $A_i$：第 $i$ 项活动的量（kWh、km、kg 等）
+- $F_i$：对应排放因子（kgCO₂e / 单位）
+- 结果统一为 kgCO₂e（二氧化碳当量）
+
+## 数据来源
+
+- 生态环境部《省级温室气体清单编制指南》
+- 中国区域电网平均排放因子（2022）
+- IPCC AR6 (2021)
+- UK DEFRA GHG Conversion Factors (2023)
+- Poore & Nemecek, *Science* (2018)
+
+## 技术栈
+
+- Vue 3 + Vite
+- Pinia（状态管理）
+- vue-i18n（国际化）
+- ECharts（图表，按需引入）
+- Dexie / IndexedDB（本地存储）
+
+## 隐私
+
+所有数据仅保存在浏览器本地 IndexedDB，不上传任何服务器。
+
+## 免责声明
+
+结果基于通用排放因子估算，仅供个人参考，不作为正式核算依据。
+
+## 目录结构
+
+```
+app/
+├── src/
+│   ├── core/            # 核心逻辑
+│   │   ├── emissionFactors.js   # 排放因子数据表
+│   │   ├── calculator.js        # 计算引擎
+│   │   ├── suggestions.js       # 减排建议规则库
+│   │   ├── seedData.js          # 示例用户画像与记录生成
+│   │   ├── ecoStatus.js         # 生态状况模拟数据
+│   │   ├── leaderboard.js       # 排行榜构建
+│   │   ├── poster.js            # 分享海报 Canvas 绘制
+│   │   └── db.js                # 本地存储
+│   ├── i18n/            # 中英文字典
+│   ├── stores/          # Pinia 状态
+│   ├── components/      # 图表组件
+│   └── views/           # 页面视图
+└── dist/                # 构建产物
+```
