@@ -76,7 +76,8 @@ $$E = \sum_{i} A_i \times F_i$$
 - IPCC AR6 (2021)
 - UK DEFRA GHG Conversion Factors (2023)
 - Poore & Nemecek, *Science* (2018)
-
+> 中国地图数据与 AQI 数据来自 ECharts 官方地图及生态环境部公开数据，
+> 经由 echarts_demo-master 项目获取。
 ## 技术栈
 
 - Vue 3 + Vite
